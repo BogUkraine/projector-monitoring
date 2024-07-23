@@ -1,0 +1,79 @@
+version: '3.6'
+services:
+  telegraf:
+    user: telegraf:1001
+    image: telegraf:1.31.2-alpine
+    ports:
+    - '127.0.0.1:8125:8125/udp'
+    volumes:
+    - /var/run/docker.sock:/var/run/docker.sock
+    - ./telegraf/etc/telegraf.conf:/etc/telegraf/telegraf.conf:ro
+    depends_on:
+      - influxdb
+    links:
+      - influxdb
+    privileged: true
+
+  influxdb:
+    image: influxdb:1.8.10
+    env_file: configuration.env
+    ports:
+      - '127.0.0.1:8086:8086'
+    volumes:
+      - ./:/imports
+      - influxdb_data:/var/lib/influxdb
+
+  grafana:
+    image: grafana/grafana:10.0.0-ubuntu
+    depends_on:
+      - influxdb
+    env_file: configuration.env
+    links:
+      - influxdb
+    ports:
+      - '127.0.0.1:3000:3000'
+    volumes:
+      - grafana_data:/var/lib/grafana
+      - ./grafana/provisioning/:/etc/grafana/provisioning/
+      - ./grafana/dashboards/:/var/lib/grafana/dashboards/
+
+  mongodb:
+    image: mongo:8.0.0-rc8
+    env_file: configuration.env
+    ports:
+      - "27017:27017"
+    volumes:
+      - mongo_data:/data/db
+    depends_on:
+      - telegraf
+
+  # nginx:
+  #   image: nginx:alpine3.19
+  #   env_file: configuration.env
+  #   ports:
+  #     - "127.0.0.1:8080:8080"
+  #   volumes:
+  #     - ./nginx/conf:/etc/nginx/conf.d
+  #     - ./nginx/html:/usr/share/nginx/html
+  #   depends_on:
+  #     - mongodb
+
+  # node
+  
+  elasticsearch:
+    image: elasticsearch:8.14.3
+    env_file: configuration.env
+    ports:
+      - "9200:9200"
+      - "9300:9300"
+    volumes:
+      - es_data:/usr/share/elasticsearch/data
+    depends_on:
+      - telegraf
+
+
+volumes:
+  grafana_data: {}
+  influxdb_data: {}
+  mongo_data: {}
+  es_data: {}
