@@ -41,7 +41,7 @@ services:
     image: mongo:8.0.0-rc8
     env_file: configuration.env
     ports:
-      - "27017:27017"
+      - "127.0.0.1:27017:27017"
     volumes:
       - mongo_data:/data/db
     depends_on:
@@ -60,20 +60,87 @@ services:
 
   # node
   
-  elasticsearch:
+  elasticsearch_01:
     image: elasticsearch:8.14.3
-    env_file: configuration.env
+    container_name: es01
+    environment:
+      - node.name=es01
+      - cluster.name=es-docker-cluster
+      - network.host=0.0.0.0
+      - discovery.seed_hosts=es02,es03
+      - cluster.initial_master_nodes=es01,es02,es03
+      - bootstrap.memory_lock=true
+      - "ES_JAVA_OPTS=-Xms512m -Xmx512m"
+      - xpack.security.enabled=false
+    ulimits:
+      memlock:
+        soft: -1
+        hard: -1
     ports:
       - "9200:9200"
       - "9300:9300"
     volumes:
-      - es_data:/usr/share/elasticsearch/data
+      - es_data1:/usr/share/elasticsearch/data
     depends_on:
       - telegraf
+    networks:
+      - elastic
+
+  elasticsearch_02:
+    image: elasticsearch:8.14.3
+    container_name: es02
+    environment:
+      - node.name=es02
+      - cluster.name=es-docker-cluster
+      - network.host=0.0.0.0
+      - discovery.seed_hosts=es01,es03
+      - cluster.initial_master_nodes=es01,es02,es03
+      - bootstrap.memory_lock=true
+      - "ES_JAVA_OPTS=-Xms512m -Xmx512m"
+      - xpack.security.enabled=false
+    ulimits:
+      memlock:
+        soft: -1
+        hard: -1
+    volumes:
+      - es_data2:/usr/share/elasticsearch/data
+    depends_on:
+      - telegraf
+    networks:
+      - elastic
+
+  elasticsearch_03:
+    image: elasticsearch:8.14.3
+    container_name: es03
+    environment:
+      - node.name=es03
+      - cluster.name=es-docker-cluster
+      - network.host=0.0.0.0
+      - discovery.seed_hosts=es01,es02
+      - cluster.initial_master_nodes=es01,es02,es03
+      - bootstrap.memory_lock=true
+      - "ES_JAVA_OPTS=-Xms512m -Xmx512m"
+      - xpack.security.enabled=false
+    ulimits:
+      memlock:
+        soft: -1
+        hard: -1
+    volumes:
+      - es_data3:/usr/share/elasticsearch/data
+    depends_on:
+      - telegraf
+    networks:
+      - elastic
 
 
 volumes:
   grafana_data: {}
   influxdb_data: {}
   mongo_data: {}
-  es_data: {}
+  es_data1: {}
+  es_data2: {}
+  es_data3: {}
+
+networks:
+  elastic:
+    driver: bridge
