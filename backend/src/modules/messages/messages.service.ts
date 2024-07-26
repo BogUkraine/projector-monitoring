@@ -1,11 +1,11 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
-import { IMessage } from './message.interface';
-import { InjectModel } from '@nestjs/mongoose';
-import { Model } from 'mongoose';
-import { CreateMessageDto } from './dtos/create-message.dto';
-import { UpdateMessageDto } from './dtos/update-message.dto';
-import { Message } from './message.schema';
-import MessagesSearchService from '../search/message-search.service';
+import { Injectable, NotFoundException } from "@nestjs/common";
+import { IMessage } from "./message.interface";
+import { InjectModel } from "@nestjs/mongoose";
+import { Model } from "mongoose";
+import { CreateMessageDto } from "./dtos/create-message.dto";
+import { UpdateMessageDto } from "./dtos/update-message.dto";
+import { Message } from "./message.schema";
+import MessagesSearchService from "../search/message-search.service";
 
 @Injectable()
 export class MessagesService {
@@ -46,7 +46,7 @@ export class MessagesService {
   async getAllMessages(): Promise<IMessage[]> {
     const messageData = await this.messageModel.find();
     if (!messageData || messageData.length == 0) {
-      throw new NotFoundException('Messages data not found!');
+      throw new NotFoundException("Messages data not found!");
     }
 
     return messageData;
@@ -77,6 +77,6 @@ export class MessagesService {
       return [];
     }
 
-    return await this.messageModel.find().where('_id').in(ids);
+    return await this.messageModel.find().where("_id").in(ids);
   }
 }

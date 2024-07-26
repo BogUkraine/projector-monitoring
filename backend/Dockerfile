@@ -2,7 +2,7 @@
 FROM node:20.13 as build
 WORKDIR /app
 COPY package*.json ./
-RUN npm install
+RUN npm ci
 COPY . .
 RUN npm run build
 
@@ -10,10 +10,10 @@ RUN npm run build
 FROM node:20.13
 WORKDIR /app
 COPY package*.json ./
-RUN npm install --only=production
+RUN npm ci --only=production
 COPY --from=build /app/dist ./dist
 COPY .env ./
-EXPOSE 3000
+EXPOSE 8000
 
 # Command to run the application
-CMD ["node", "dist/main"]
+CMD ["node", "dist/src/main"]

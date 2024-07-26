@@ -9,12 +9,12 @@ import {
   Put,
   Query,
   Res,
-} from '@nestjs/common';
-import { MessagesService } from './messages.service';
-import { CreateMessageDto } from './dtos/create-message.dto';
-import { UpdateMessageDto } from './dtos/update-message.dto';
+} from "@nestjs/common";
+import { MessagesService } from "./messages.service";
+import { CreateMessageDto } from "./dtos/create-message.dto";
+import { UpdateMessageDto } from "./dtos/update-message.dto";
 
-@Controller('/messages')
+@Controller("/messages")
 export class MessagesController {
   constructor(private readonly messageService: MessagesService) {}
 
@@ -28,22 +28,22 @@ export class MessagesController {
         await this.messageService.createMessage(createMessageDto);
 
       return response.status(HttpStatus.CREATED).json({
-        message: 'Message has been created successfully',
+        message: "Message has been created successfully",
         newMessage,
       });
     } catch (err) {
       return response.status(HttpStatus.BAD_REQUEST).json({
         statusCode: 400,
-        message: 'Error: Message not created!',
-        error: 'Bad Request',
+        message: "Error: Message not created!",
+        error: "Bad Request",
       });
     }
   }
 
-  @Put('/:id')
+  @Put("/:id")
   async updateMessage(
     @Res() response,
-    @Param('id') messageId: string,
+    @Param("id") messageId: string,
     @Body() updateMessageDto: UpdateMessageDto,
   ) {
     try {
@@ -53,7 +53,7 @@ export class MessagesController {
       );
 
       return response.status(HttpStatus.OK).json({
-        message: 'Message has been successfully updated',
+        message: "Message has been successfully updated",
         existingMessage,
       });
     } catch (err) {
@@ -67,7 +67,7 @@ export class MessagesController {
       const messageData = await this.messageService.getAllMessages();
 
       return response.status(HttpStatus.OK).json({
-        message: 'All messages data found successfully',
+        message: "All messages data found successfully",
         messageData,
       });
     } catch (err) {
@@ -75,13 +75,13 @@ export class MessagesController {
     }
   }
 
-  @Get('/search')
-  async searchMessages(@Res() response, @Query('search') search: string) {
+  @Get("/search")
+  async searchMessages(@Res() response, @Query("search") search: string) {
     try {
       const messageData = await this.messageService.searchMessages(search);
 
       return response.status(HttpStatus.OK).json({
-        message: 'All messages data found successfully',
+        message: "All messages data found successfully",
         messageData,
       });
     } catch (err) {
@@ -89,13 +89,13 @@ export class MessagesController {
     }
   }
 
-  @Get('/:id')
-  async getMessage(@Res() response, @Param('id') messageId: string) {
+  @Get("/:id")
+  async getMessage(@Res() response, @Param("id") messageId: string) {
     try {
       const existingMessage = await this.messageService.getMessage(messageId);
 
       return response.status(HttpStatus.OK).json({
-        message: 'Message found successfully',
+        message: "Message found successfully",
         existingMessage,
       });
     } catch (err) {
@@ -103,13 +103,13 @@ export class MessagesController {
     }
   }
 
-  @Delete('/:id')
-  async deleteMessage(@Res() response, @Param('id') messageId: string) {
+  @Delete("/:id")
+  async deleteMessage(@Res() response, @Param("id") messageId: string) {
     try {
       const deletedMessage = await this.messageService.deleteMessage(messageId);
 
       return response.status(HttpStatus.OK).json({
-        message: 'Message deleted successfully',
+        message: "Message deleted successfully",
         deletedMessage,
       });
     } catch (err) {
