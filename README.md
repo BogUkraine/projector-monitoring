@@ -25,7 +25,7 @@ Plugin for docker is taken from https://github.com/influxdata/telegraf/blob/mast
 
 # Tests
 ## Post 100.000 requests with 10 concurrency
-ab -n 100000 -c 10 -p ../ab/create-message.json http://localhost:8080/messages
+`ab -n 100000 -c 10 -p ../ab/create-message.json -T application/json http://localhost:8080/messages`
 This is ApacheBench, Version 2.3 <$Revision: 1903618 $>
 Copyright 1996 Adam Twiss, Zeus Technology Ltd, http://www.zeustech.net/
 Licensed to The Apache Software Foundation, http://www.apache.org/
@@ -43,49 +43,48 @@ Completed 90000 requests
 Completed 100000 requests
 Finished 100000 requests
 
+
 Server Software:        nginx/1.27.0
 Server Hostname:        localhost
 Server Port:            8080
 
 Document Path:          /messages
-Document Length:        158 bytes
+Document Length:        211 bytes
 
 Concurrency Level:      10
-Time taken for tests:   51.823 seconds
+Time taken for tests:   154.772 seconds
 Complete requests:      100000
 Failed requests:        0
-Non-2xx responses:      100000
-Total transferred:      39700000 bytes
-Total body sent:        25100000
-HTML transferred:       15800000 bytes
-Requests per second:    1929.64 [#/sec] (mean)
-Time per request:       5.182 [ms] (mean)
-Time per request:       0.518 [ms] (mean, across all concurrent requests)
-Transfer rate:          748.11 [Kbytes/sec] received
-                        472.99 kb/s sent
-                        1221.10 kb/s total
+Total transferred:      44600000 bytes
+Total body sent:        25600000
+HTML transferred:       21100000 bytes
+Requests per second:    646.11 [#/sec] (mean)
+Time per request:       15.477 [ms] (mean)
+Time per request:       1.548 [ms] (mean, across all concurrent requests)
+Transfer rate:          281.41 [Kbytes/sec] received
+                        161.53 kb/s sent
+                        442.94 kb/s total
 
 Connection Times (ms)
               min  mean[+/-sd] median   max
 Connect:        0    0   0.0      0       1
-Processing:     1    5   2.0      6      24
-Waiting:        1    5   2.0      6      24
-Total:          1    5   2.0      6      24
+Processing:     3   15   7.4     16     578
+Waiting:        3   15   7.3     16     578
+Total:          3   15   7.4     16     578
 
 Percentage of the requests served within a certain time (ms)
-  50%      6
-  66%      6
-  75%      6
-  80%      6
-  90%      7
-  95%      7
-  98%      9
-  99%     11
- 100%     24 (longest request)
+  50%     16
+  66%     18
+  75%     19
+  80%     20
+  90%     22
+  95%     24
+  98%     26
+  99%     28
+ 100%    578 (longest request)
 
- --------------------------------------------------------
- ab -n 1000000 -c 50 -p ../ab/create-message.json http://localhos
-t:8080/messages
+## Post 1.000.000 requests with 50 concurrency
+`ab -n 1000000 -c 50 -p ../ab/create-message.json -T application/json http://localhost:8080/messages`
 This is ApacheBench, Version 2.3 <$Revision: 1903618 $>
 Copyright 1996 Adam Twiss, Zeus Technology Ltd, http://www.zeustech.net/
 Licensed to The Apache Software Foundation, http://www.apache.org/
@@ -109,37 +108,69 @@ Server Hostname:        localhost
 Server Port:            8080
 
 Document Path:          /messages
-Document Length:        158 bytes
+Document Length:        211 bytes
 
 Concurrency Level:      50
-Time taken for tests:   375.555 seconds
+Time taken for tests:   844.341 seconds
 Complete requests:      1000000
 Failed requests:        0
-Non-2xx responses:      1000000
-Total transferred:      397000000 bytes
-Total body sent:        251000000
-HTML transferred:       158000000 bytes
-Requests per second:    2662.73 [#/sec] (mean)
-Time per request:       18.778 [ms] (mean)
-Time per request:       0.376 [ms] (mean, across all concurrent requests)
-Transfer rate:          1032.33 [Kbytes/sec] received
-                        652.68 kb/s sent
-                        1685.01 kb/s total
+Total transferred:      446000000 bytes
+Total body sent:        256000000
+HTML transferred:       211000000 bytes
+Requests per second:    1184.36 [#/sec] (mean)
+Time per request:       42.217 [ms] (mean)
+Time per request:       0.844 [ms] (mean, across all concurrent requests)
+Transfer rate:          515.84 [Kbytes/sec] received
+                        296.09 kb/s sent
+                        811.93 kb/s total
 
 Connection Times (ms)
               min  mean[+/-sd] median   max
-Connect:        0    0   0.0      0       3
-Processing:     4   19   7.5     20      90
-Waiting:        3   19   7.5     20      90
-Total:          4   19   7.5     20      90
+Connect:        0    0   0.0      0       2
+Processing:    12   42  10.6     43     182
+Waiting:       12   42  10.6     43     182
+Total:         12   42  10.6     43     182
 
 Percentage of the requests served within a certain time (ms)
-  50%     20
-  66%     21
-  75%     23
-  80%     24
-  90%     26
-  95%     30
-  98%     36
-  99%     40
- 100%     90 (longest request)
+  50%     43
+  66%     45
+  75%     47
+  80%     48
+  90%     53
+  95%     59
+  98%     69
+  99%     77
+ 100%    182 (longest request)
+
+# Metrics comparison with and w/o load
+You can find a better resolution screens in `./results` folder.
+<br>
+The first pick is after 100.000 request. The next wave is 1.000.000 requests with bigger concurrency
+
+## Docker
+![alt text](results/normal_docker.png)
+![alt text](results/normal_docker.png)
+![alt text](results/_load_docker.png)
+![alt text](results/_load_docker2.png)
+
+## Elastic
+![alt text](results/normal_elastic.png)
+![alt text](results/normal_elastic2.png)
+![alt text](results/_load_elastic.png)
+![alt text](results/_load_elastic2.png)
+
+## Mongo
+![alt text](results/normal_mongo.png)
+![alt text](results/normal_mongo2.png)
+![alt text](results/_load_mongo.png)
+![alt text](results/_load_mongo2.png)
+
+## Nginx
+![alt text](results/normal_nginx.png)
+![alt text](results/_load_nginx.png)
+
+## System
+![alt text](results/normal_system.png)
+![alt text](results/normal_system2.png)
+![alt text](results/_load_system.png)
+![alt text](results/_load_system2.png)
