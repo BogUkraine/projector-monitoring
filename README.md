@@ -9,7 +9,7 @@ Plugin for docker is taken from https://github.com/influxdata/telegraf/blob/mast
 1. Copy ./backend/.env.example into ./backend/.env
 2. docker-compose up
 
-# Which services are here
+# Which services are configured here
 1. Telegraf to collect metrics and put them to InfluxDB
 2. InfluxDB to store metrics data from Telegraf
 3. Grafana to visualize metrics on the dashboards
@@ -26,6 +26,7 @@ Plugin for docker is taken from https://github.com/influxdata/telegraf/blob/mast
 # Tests
 ## Post 100.000 requests with 10 concurrency
 `ab -n 100000 -c 10 -p ../ab/create-message.json -T application/json http://localhost:8080/messages`
+```
 This is ApacheBench, Version 2.3 <$Revision: 1903618 $>
 Copyright 1996 Adam Twiss, Zeus Technology Ltd, http://www.zeustech.net/
 Licensed to The Apache Software Foundation, http://www.apache.org/
@@ -82,9 +83,10 @@ Percentage of the requests served within a certain time (ms)
   98%     26
   99%     28
  100%    578 (longest request)
-
+```
 ## Post 1.000.000 requests with 50 concurrency
 `ab -n 1000000 -c 50 -p ../ab/create-message.json -T application/json http://localhost:8080/messages`
+```
 This is ApacheBench, Version 2.3 <$Revision: 1903618 $>
 Copyright 1996 Adam Twiss, Zeus Technology Ltd, http://www.zeustech.net/
 Licensed to The Apache Software Foundation, http://www.apache.org/
@@ -141,36 +143,46 @@ Percentage of the requests served within a certain time (ms)
   98%     69
   99%     77
  100%    182 (longest request)
-
+```
 # Metrics comparison with and w/o load
 You can find a better resolution screens in `./results` folder.
 <br>
 The first pick is after 100.000 request. The next wave is 1.000.000 requests with bigger concurrency
 
 ## Docker
+### w/o load
 ![alt text](results/normal_docker.png)
 ![alt text](results/normal_docker.png)
+### with load
 ![alt text](results/_load_docker.png)
 ![alt text](results/_load_docker2.png)
 
 ## Elastic
+### w/o load
 ![alt text](results/normal_elastic.png)
 ![alt text](results/normal_elastic2.png)
+### with load
 ![alt text](results/_load_elastic.png)
 ![alt text](results/_load_elastic2.png)
 
 ## Mongo
+### w/o load
 ![alt text](results/normal_mongo.png)
 ![alt text](results/normal_mongo2.png)
+### with load
 ![alt text](results/_load_mongo.png)
 ![alt text](results/_load_mongo2.png)
 
 ## Nginx
+### w/o load
 ![alt text](results/normal_nginx.png)
+### with load
 ![alt text](results/_load_nginx.png)
 
 ## System
+### w/o load
 ![alt text](results/normal_system.png)
 ![alt text](results/normal_system2.png)
+### with load
 ![alt text](results/_load_system.png)
 ![alt text](results/_load_system2.png)
